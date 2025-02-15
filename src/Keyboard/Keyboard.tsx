@@ -1,10 +1,12 @@
 import styled from "styled-components"
+import { samples } from "../data"
 import { useKeyboardControl } from "../hooks/useKeyboardControl"
+import { useMiniKeys } from "../hooks/useMiniKeys"
 import { Key } from "./Key"
 
 export const Keyboard = () => {
   const width = 1200
-  const mode = "dual"
+  const mode = "single"
   const showFullKeyboard = false
   const hideModifiers = !showFullKeyboard
   const rows = [
@@ -15,10 +17,16 @@ export const Keyboard = () => {
   ]
   const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
 
-  const { activeKeys, keyMap, transposeDown, transposeUp } =
-    useKeyboardControl(mode)
+  const { playNoteFromMidi } = useMiniKeys(samples)
 
-  console.log(keyMap)
+  const {
+    activeKeys,
+    keyMap,
+    transposeDown,
+    transposeUp,
+    octaveDown,
+    octaveUp,
+  } = useKeyboardControl(mode, playNoteFromMidi)
 
   const calculateRowShift = (shift: number) => {
     if (showFullKeyboard) {
@@ -141,6 +149,8 @@ export const Keyboard = () => {
       </Row>
       <button onClick={() => transposeDown && transposeDown()}>left</button>
       <button onClick={() => transposeUp && transposeUp()}>right</button>
+      <button onClick={() => octaveDown && octaveDown()}>left</button>
+      <button onClick={() => octaveUp && octaveUp()}>right</button>
     </Container>
   )
 }

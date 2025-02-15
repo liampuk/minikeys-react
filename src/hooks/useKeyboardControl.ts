@@ -1,7 +1,10 @@
 import { KeyboardMode, KeyMap, MiniKeysKeyboard } from "minikeys2"
 import { useEffect, useRef, useState } from "react"
 
-export const useKeyboardControl = (mode: KeyboardMode) => {
+export const useKeyboardControl = (
+  mode: KeyboardMode,
+  playNoteFromMidi?: (midiNote: number, velocity?: number) => void
+) => {
   const minikeysKeyboardRef = useRef<MiniKeysKeyboard | null>(null)
   const [keyMap, setKeyMap] = useState<KeyMap>()
   const [activeKeys, setActiveKeys] = useState<string[]>([])
@@ -14,7 +17,12 @@ export const useKeyboardControl = (mode: KeyboardMode) => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       setActiveKeys((prev) => [...prev, event.key])
-      console.log(event.key)
+      const keyMap = minikeysKeyboardRef.current?.getNoteMap()
+      const note = keyMap?.get(event.key)?.midiNote
+      if (note && playNoteFromMidi) {
+        console.log(note)
+        playNoteFromMidi(note)
+      }
     }
 
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -29,7 +37,7 @@ export const useKeyboardControl = (mode: KeyboardMode) => {
       window.removeEventListener("keyup", handleKeyUp, true)
       minikeysKeyboardRef.current = null
     }
-  }, [])
+  }, [mode, playNoteFromMidi])
 
   const transposeDown = () => {
     minikeysKeyboardRef.current?.shiftLeft()
@@ -41,10 +49,22 @@ export const useKeyboardControl = (mode: KeyboardMode) => {
     setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
   }
 
+  const octaveDown = () => {
+    minikeysKeyboardRef.current?.shiftLeftOctave()
+    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
+  }
+
+  const octaveUp = () => {
+    minikeysKeyboardRef.current?.shiftRightOctave()
+    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
+  }
+
   return {
     activeKeys,
     keyMap,
     transposeDown,
     transposeUp,
+    octaveDown,
+    octaveUp,
   }
 }
