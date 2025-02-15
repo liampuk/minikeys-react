@@ -1,88 +1,146 @@
-import { useState } from "react"
 import styled from "styled-components"
+import { useKeyboardControl } from "../hooks/useKeyboardControl"
 import { Key } from "./Key"
 
 export const Keyboard = () => {
   const width = 1200
-  const [hideModifiers, _setHideModifiers] = useState(false)
+  const mode = "dual"
+  const showFullKeyboard = false
+  const hideModifiers = !showFullKeyboard
   const rows = [
-    ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "="],
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"],
-    ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "@"],
-    ["z", "x", "c", "v", "b", "n", "m", ",", "<", ">"],
+    ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
+    ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
   ]
-  const baseWidth = width / 15
+  const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
+
+  const { activeKeys, keyMap, transposeDown, transposeUp } =
+    useKeyboardControl(mode)
+
+  console.log(keyMap)
+
+  const calculateRowShift = (shift: number) => {
+    if (showFullKeyboard) {
+      return 0
+    } else {
+      if (mode === "single") {
+        return baseWidth * shift - baseWidth * 0.5
+      } else {
+        return baseWidth * shift
+      }
+    }
+  }
 
   return (
     <Container $width={width}>
-      <Row>
+      <Row $shift={0} $show={mode === "dual" || showFullKeyboard}>
         <Key
           baseWidth={baseWidth}
-          modifier={1}
+          size={1}
           hidden={hideModifiers}
-          label="esc"
+          label="``"
+          active={activeKeys.includes("Escape")}
+          keyType="unplayable"
         ></Key>
         {Array.from({ length: 12 }).map((_, i) => (
-          <Key baseWidth={baseWidth} key={i} label={rows[0][i]} />
+          <Key
+            baseWidth={baseWidth}
+            key={i}
+            label={rows[0][i]}
+            keyType={keyMap?.get(rows[0][i])?.type || "unplayable"}
+            active={activeKeys.includes(rows[0][i])}
+          />
         ))}
         <Key
           baseWidth={baseWidth}
-          modifier={2}
+          size={2}
           hidden={hideModifiers}
           label="backspace"
+          keyType="unplayable"
         />
       </Row>
-      <Row>
+      <Row $shift={calculateRowShift(0.5)} $show={true}>
         <Key
           baseWidth={baseWidth}
-          modifier={1.5}
+          size={1.5}
           hidden={hideModifiers}
           label="tab"
+          keyType="unplayable"
         />
         {Array.from({ length: 12 }).map((_, i) => (
-          <Key baseWidth={baseWidth} key={i} label={rows[1][i]} />
+          <Key
+            baseWidth={baseWidth}
+            key={i}
+            label={rows[1][i]}
+            keyType={keyMap?.get(rows[1][i])?.type || "unplayable"}
+            active={activeKeys.includes(rows[1][i])}
+          />
         ))}
         <Key
           baseWidth={baseWidth}
-          modifier={1.5}
+          size={1.5}
           hidden={hideModifiers}
           label="\"
+          keyType="unplayable"
         />
       </Row>
-      <Row>
+      <Row $shift={calculateRowShift(0.75)} $show={true}>
         <Key
           baseWidth={baseWidth}
-          modifier={1.75}
+          size={1.75}
           hidden={hideModifiers}
           label="caps lock"
+          keyType="unplayable"
         />
         {Array.from({ length: 11 }).map((_, i) => (
-          <Key baseWidth={baseWidth} key={i} label={rows[2][i]} />
+          <Key
+            baseWidth={baseWidth}
+            key={i}
+            label={rows[2][i]}
+            keyType={keyMap?.get(rows[2][i])?.type || "unplayable"}
+            active={activeKeys.includes(rows[2][i])}
+          />
         ))}
         <Key
           baseWidth={baseWidth}
-          modifier={2.25}
+          size={2.25}
           hidden={hideModifiers}
           label="enter"
+          keyType="unplayable"
         />
       </Row>
-      <Row>
+      <Row
+        $shift={calculateRowShift(1.25)}
+        $show={mode === "dual" || showFullKeyboard}
+      >
         <Key
           baseWidth={baseWidth}
-          modifier={2.25}
+          size={2.25}
           hidden={hideModifiers}
           label="shift"
+          keyType="unplayable"
         />
         {Array.from({ length: 10 }).map((_, i) => (
-          <Key baseWidth={baseWidth} key={i} label={rows[3][i]} />
+          <Key
+            baseWidth={baseWidth}
+            key={i}
+            label={rows[3][i]}
+            keyType={keyMap?.get(rows[3][i])?.type || "unplayable"}
+            active={activeKeys.includes(rows[3][i])}
+            a
+          />
         ))}
         <Key
           baseWidth={baseWidth}
-          modifier={2.75}
+          size={2.75}
           hidden={hideModifiers}
           label="shift"
+          keyType="unplayable"
         />
       </Row>
+      <button onClick={() => transposeDown && transposeDown()}>left</button>
+      <button onClick={() => transposeUp && transposeUp()}>right</button>
     </Container>
   )
 }
@@ -97,6 +155,7 @@ const Container = styled.div<{ $width: number }>`
   }
 `
 
-const Row = styled.div`
-  display: flex;
+const Row = styled.div<{ $shift: number; $show: boolean }>`
+  display: ${(props) => (props.$show ? "flex" : "none")};
+  margin-left: ${(props) => props.$shift}px;
 `

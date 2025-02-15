@@ -1,0 +1,109 @@
+import styled, { css } from "styled-components"
+
+type Props = {
+  label?: string
+  size?: number
+  hidden?: boolean
+  baseWidth: number
+  active?: boolean
+  disabled?: boolean
+  blackKey?: boolean
+}
+
+export const Key = ({
+  label,
+  size,
+  hidden,
+  baseWidth,
+  active,
+  disabled,
+  blackKey,
+}: Props) => {
+  return (
+    <Container
+      $hidden={hidden}
+      $width={baseWidth * (size ?? 1)}
+      $height={baseWidth}
+    >
+      <Keycap
+        $dark={!!size}
+        $size={size}
+        $active={active || false}
+        $disabled={!!size || disabled}
+      >
+        {label}
+      </Keycap>
+    </Container>
+  )
+}
+
+const Container = styled.div<{
+  $hidden?: boolean
+  $width: number
+  $height: number
+}>`
+  --width: ${(props) => props.$width}px;
+  --height: ${(props) => props.$height}px;
+  width: var(--width);
+  height: var(--height);
+  /* opacity: ${(props) => (props.$hidden ? 0 : 1)}; */
+  display: ${(props) => (props.$hidden ? "none" : "block")};
+  padding: calc(var(--height) * 0.07);
+`
+
+const Keycap = styled.div<{
+  $size?: number
+  $dark?: boolean
+  $active: boolean
+  $disabled: boolean
+}>`
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => (props.$dark ? "#222" : "#fff")};
+  border-radius: calc(var(--height) * 0.06);
+  font-family: sans-serif;
+  padding: calc(var(--height) * 0.08);
+  font-size: calc(var(--height) * 0.12);
+  cursor: pointer;
+  user-select: none;
+  color: ${(props) => (props.$dark ? "#fff" : "#444")};
+  box-shadow: 0 calc(var(--height) * 0.01) calc(var(--height) * 0.03)
+      calc(var(--height) * 0.01) rgba(0, 0, 0, 0.1),
+    rgba(255, 255, 255, 0.2) 0px calc(var(--height) * 0.03)
+      calc(var(--height) * 0.04) 0px inset;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) => (props.$dark ? "#111" : "#f8f8f8")};
+  }
+
+  ${(props) =>
+    props.$active &&
+    css`
+      transform: translateY(calc(var(--height) * 0.03));
+      box-shadow: 0 calc(var(--height) * 0.01) calc(var(--height) * 0.03)
+          calc(var(--height) * 0.01) rgba(0, 0, 0, 0),
+        rgba(255, 255, 255, 0.3) 0px calc(var(--height) * 0.03)
+          calc(var(--height) * 0.04) 0px inset;
+      background-color: ${props.$dark ? "#000" : "#efefef"};
+    `}
+
+  &:active {
+    transform: translateY(calc(var(--height) * 0.03));
+    box-shadow: 0 calc(var(--height) * 0.01) calc(var(--height) * 0.03)
+        calc(var(--height) * 0.01) rgba(0, 0, 0, 0),
+      rgba(255, 255, 255, 0.3) 0px calc(var(--height) * 0.03)
+        calc(var(--height) * 0.04) 0px inset;
+    background-color: ${(props) => (props.$dark ? "#000" : "#efefef")};
+  }
+
+  ${({ $size }) =>
+    !$size &&
+    css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: calc(var(--height) * 0.2);
+    `}
+`
