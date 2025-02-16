@@ -3,18 +3,31 @@ import { samples } from "../data"
 import { useKeyboardControl } from "../hooks/useKeyboardControl"
 import { useMiniKeys } from "../hooks/useMiniKeys"
 import { Key } from "./Key"
+import { keyboardRows, keyCodeToLabel } from "./utils"
 
-export const Keyboard = () => {
-  const width = 1200
-  const mode = "single"
-  const showFullKeyboard = false
+type Props = {
+  width?: number
+  mode?: "single" | "dual"
+  showFullKeyboard?: boolean
+  modifierKeys?: ModifierKey[]
+}
+
+export type ModifierKey = {
+  keyCode: string
+  label: string
+  action: () => void
+  bgColour?: string
+  colour?: string
+}
+
+export const Keyboard = ({
+  width = 1200,
+  mode = "single",
+  showFullKeyboard = false,
+  modifierKeys,
+}: Props) => {
   const hideModifiers = !showFullKeyboard
-  const rows = [
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
-    ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"],
-    ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
-    ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
-  ]
+
   const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
 
   const { playNoteFromMidi } = useMiniKeys(samples)
@@ -40,6 +53,19 @@ export const Keyboard = () => {
     }
   }
 
+  const handleClick = (midiNote: number | null | undefined) => {
+    console.log("clicked")
+    if (playNoteFromMidi && midiNote !== null && midiNote !== undefined) {
+      playNoteFromMidi(midiNote)
+    }
+  }
+
+  const optionalModifier = (keyCodes: string[]) => {
+    return modifierKeys?.find((modifierKey) =>
+      keyCodes.includes(modifierKey.keyCode)
+    )
+  }
+
   return (
     <Container $width={width}>
       <Row $shift={0} $show={mode === "dual" || showFullKeyboard}>
@@ -47,17 +73,28 @@ export const Keyboard = () => {
           baseWidth={baseWidth}
           size={1}
           hidden={hideModifiers}
-          label="``"
-          active={activeKeys.includes("Escape")}
-          keyType="unplayable"
+          label="esc"
+          active={
+            activeKeys.includes("Escape") ||
+            activeKeys.includes("IntlBackslash")
+          }
+          modifier={optionalModifier(["Escape", "IntlBackslash"])}
         ></Key>
         {Array.from({ length: 12 }).map((_, i) => (
           <Key
             baseWidth={baseWidth}
             key={i}
-            label={rows[0][i]}
-            keyType={keyMap?.get(rows[0][i])?.type || "unplayable"}
-            active={activeKeys.includes(rows[0][i])}
+            label={keyCodeToLabel.get(keyboardRows[0][i])}
+            keyType={keyMap?.get(keyboardRows[0][i])?.type}
+            active={activeKeys.includes(keyboardRows[0][i])}
+            onClick={() =>
+              handleClick(keyMap?.get(keyboardRows[0][i])?.midiNote)
+            }
+            modifier={
+              mode === "single"
+                ? optionalModifier([keyboardRows[0][i]])
+                : undefined
+            }
           />
         ))}
         <Key
@@ -65,7 +102,8 @@ export const Keyboard = () => {
           size={2}
           hidden={hideModifiers}
           label="backspace"
-          keyType="unplayable"
+          active={activeKeys.includes("Backspace")}
+          modifier={optionalModifier(["Backspace"])}
         />
       </Row>
       <Row $shift={calculateRowShift(0.5)} $show={true}>
@@ -74,15 +112,19 @@ export const Keyboard = () => {
           size={1.5}
           hidden={hideModifiers}
           label="tab"
-          keyType="unplayable"
+          active={activeKeys.includes("Tab")}
+          modifier={optionalModifier(["Tab"])}
         />
         {Array.from({ length: 12 }).map((_, i) => (
           <Key
             baseWidth={baseWidth}
             key={i}
-            label={rows[1][i]}
-            keyType={keyMap?.get(rows[1][i])?.type || "unplayable"}
-            active={activeKeys.includes(rows[1][i])}
+            label={keyCodeToLabel.get(keyboardRows[1][i])}
+            keyType={keyMap?.get(keyboardRows[1][i])?.type}
+            active={activeKeys.includes(keyboardRows[1][i])}
+            onClick={() =>
+              handleClick(keyMap?.get(keyboardRows[1][i])?.midiNote)
+            }
           />
         ))}
         <Key
@@ -90,7 +132,8 @@ export const Keyboard = () => {
           size={1.5}
           hidden={hideModifiers}
           label="\"
-          keyType="unplayable"
+          active={activeKeys.includes("Backquote")}
+          modifier={optionalModifier(["Backquote"])}
         />
       </Row>
       <Row $shift={calculateRowShift(0.75)} $show={true}>
@@ -99,15 +142,19 @@ export const Keyboard = () => {
           size={1.75}
           hidden={hideModifiers}
           label="caps lock"
-          keyType="unplayable"
+          active={activeKeys.includes("CapsLock")}
+          modifier={optionalModifier(["CapsLock"])}
         />
         {Array.from({ length: 11 }).map((_, i) => (
           <Key
             baseWidth={baseWidth}
             key={i}
-            label={rows[2][i]}
-            keyType={keyMap?.get(rows[2][i])?.type || "unplayable"}
-            active={activeKeys.includes(rows[2][i])}
+            label={keyCodeToLabel.get(keyboardRows[2][i])}
+            keyType={keyMap?.get(keyboardRows[2][i])?.type}
+            active={activeKeys.includes(keyboardRows[2][i])}
+            onClick={() =>
+              handleClick(keyMap?.get(keyboardRows[2][i])?.midiNote)
+            }
           />
         ))}
         <Key
@@ -115,7 +162,8 @@ export const Keyboard = () => {
           size={2.25}
           hidden={hideModifiers}
           label="enter"
-          keyType="unplayable"
+          active={activeKeys.includes("Enter")}
+          modifier={optionalModifier(["Enter"])}
         />
       </Row>
       <Row
@@ -127,16 +175,24 @@ export const Keyboard = () => {
           size={2.25}
           hidden={hideModifiers}
           label="shift"
-          keyType="unplayable"
+          active={activeKeys.includes("ShiftLeft")}
+          modifier={optionalModifier(["ShiftLeft"])}
         />
         {Array.from({ length: 10 }).map((_, i) => (
           <Key
             baseWidth={baseWidth}
             key={i}
-            label={rows[3][i]}
-            keyType={keyMap?.get(rows[3][i])?.type || "unplayable"}
-            active={activeKeys.includes(rows[3][i])}
-            a
+            label={keyCodeToLabel.get(keyboardRows[3][i])}
+            keyType={keyMap?.get(keyboardRows[3][i])?.type}
+            active={activeKeys.includes(keyboardRows[3][i])}
+            onClick={() =>
+              handleClick(keyMap?.get(keyboardRows[3][i])?.midiNote)
+            }
+            modifier={
+              mode === "single"
+                ? optionalModifier([keyboardRows[3][i]])
+                : undefined
+            }
           />
         ))}
         <Key
@@ -144,7 +200,8 @@ export const Keyboard = () => {
           size={2.75}
           hidden={hideModifiers}
           label="shift"
-          keyType="unplayable"
+          active={activeKeys.includes("ShiftRight")}
+          modifier={optionalModifier(["ShiftRight"])}
         />
       </Row>
       <button onClick={() => transposeDown && transposeDown()}>left</button>

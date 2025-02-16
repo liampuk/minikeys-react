@@ -16,9 +16,9 @@ export const useKeyboardControl = (
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      setActiveKeys((prev) => [...prev, event.key])
+      setActiveKeys((prev) => [...prev, event.code])
       const keyMap = minikeysKeyboardRef.current?.getNoteMap()
-      const note = keyMap?.get(event.key)?.midiNote
+      const note = keyMap?.get(event.code)?.midiNote
       if (note && playNoteFromMidi) {
         console.log(note)
         playNoteFromMidi(note)
@@ -26,7 +26,7 @@ export const useKeyboardControl = (
     }
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      setActiveKeys((prev) => prev.filter((code) => code !== event.key))
+      setActiveKeys((prev) => prev.filter((code) => code !== event.code))
     }
 
     window.addEventListener("keydown", handleKeyDown, true)
