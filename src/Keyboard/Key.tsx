@@ -5,6 +5,7 @@ type Props = {
   label?: string
   size?: number
   hidden?: boolean
+  hiddenOpacity?: boolean
   baseWidth: number
   active?: boolean
   disabled?: boolean
@@ -17,6 +18,7 @@ export const Key = ({
   label,
   size,
   hidden,
+  hiddenOpacity,
   baseWidth,
   active,
   keyType,
@@ -26,6 +28,7 @@ export const Key = ({
   return (
     <Container
       $hidden={hidden}
+      $hiddenOpacity={hiddenOpacity}
       $width={baseWidth * (size ?? 1)}
       $height={baseWidth}
     >
@@ -38,7 +41,8 @@ export const Key = ({
         $colour={modifier?.colour}
       >
         {label}
-        {modifier && <Label>{modifier.label}</Label>}
+        {}
+        {modifier && <Label $size={size}>{modifier.label}</Label>}
       </Keycap>
     </Container>
   )
@@ -46,6 +50,7 @@ export const Key = ({
 
 const Container = styled.div<{
   $hidden?: boolean
+  $hiddenOpacity?: boolean
   $width: number
   $height: number
 }>`
@@ -53,7 +58,7 @@ const Container = styled.div<{
   --height: ${(props) => props.$height}px;
   width: var(--width);
   height: var(--height);
-  /* opacity: ${(props) => (props.$hidden ? 0 : 1)}; */
+  opacity: ${(props) => (props.$hiddenOpacity ? 0 : 1)};
   display: ${(props) => (props.$hidden ? "none" : "block")};
   padding: calc(var(--height) * 0.07);
 `
@@ -134,13 +139,14 @@ const Keycap = styled.div<{
   $bgColour?: string
   $colour?: string
 }>`
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
   border-radius: calc(var(--height) * 0.06);
   font-family: sans-serif;
   padding: calc(var(--height) * 0.08);
-  font-size: calc(var(--height) * 0.12);
+  font-size: calc(var(--height) * 0.15);
   cursor: pointer;
   user-select: none;
   box-shadow: 0 calc(var(--height) * 0.01) calc(var(--height) * 0.03)
@@ -187,13 +193,18 @@ const Keycap = styled.div<{
   flex-direction: column;
   justify-content: space-between;
 
-  ${({ $size }) => {
-    if (!$size) {
+  ${({ $size, $keyType }) => {
+    if (!$size && $keyType !== "modifier") {
       return playableKeycap
     }
   }}
 `
 
-const Label = styled.span`
-  font-size: 1em;
+const Label = styled.span<{ $size: number }>`
+  font-size: calc(var(--height) * 0.15);
+  ${({ $size }) =>
+    !$size &&
+    css`
+      text-align: center;
+    `}
 `

@@ -78,7 +78,12 @@ export const Keyboard = ({
         $show={
           dualMode ||
           showFullKeyboard ||
-          !!optionalModifier(["Escape", "IntlBackslash", "Backspace"])
+          !!optionalModifier([
+            ...keyboardRows[0],
+            "Escape",
+            "IntlBackslash",
+            "Backspace",
+          ])
         }
       >
         <Key
@@ -103,6 +108,11 @@ export const Keyboard = ({
             active={activeKeys.includes(keyboardRows[0][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[0][i])?.midiNote)
+            }
+            hiddenOpacity={
+              !dualMode &&
+              !showFullKeyboard &&
+              (dualMode ? false : !optionalModifier([keyboardRows[0][i]]))
             }
             modifier={
               dualMode ? undefined : optionalModifier([keyboardRows[0][i]])
@@ -213,7 +223,7 @@ export const Keyboard = ({
         $show={
           dualMode ||
           showFullKeyboard ||
-          !!optionalModifier(["ShiftLeft", "ShiftRight"])
+          !!optionalModifier([...keyboardRows[3], "ShiftLeft", "ShiftRight"])
         }
       >
         <Key
@@ -233,6 +243,11 @@ export const Keyboard = ({
             active={activeKeys.includes(keyboardRows[3][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[3][i])?.midiNote)
+            }
+            hiddenOpacity={
+              !dualMode &&
+              !showFullKeyboard &&
+              (dualMode ? false : !optionalModifier([keyboardRows[3][i]]))
             }
             modifier={
               dualMode ? undefined : optionalModifier([keyboardRows[3][i]])

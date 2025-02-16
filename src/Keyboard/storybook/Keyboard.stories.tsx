@@ -15,23 +15,27 @@ const defaultArgs: Partial<KeyboardProps> = {
 
 const InteractiveKeyboard = (props: KeyboardProps) => {
   const { playNoteFromMidi } = useMiniKeys(samples)
-  const { keyMap, transposeDown, transposeUp } = useMiniKeysKeyboard(
-    props?.dualMode ? "dual" : "single"
-  )
+  const { keyMap, transposeDown, transposeUp, octaveDown, octaveUp } =
+    useMiniKeysKeyboard(props?.dualMode ? "dual" : "single")
 
   const modifierKeys: ModifierKey[] = [
     {
-      keyCode: "ShiftLeft",
+      keyCode: "KeyZ",
+      label: "octave down",
+      action: () => octaveDown(),
+    },
+    {
+      keyCode: "KeyX",
+      label: "octave up",
+      action: () => octaveUp(),
+    },
+    {
+      keyCode: "KeyC",
       label: "shift down",
       action: () => transposeDown(),
     },
     {
-      keyCode: "ShiftRight",
-      label: "shift up",
-      action: () => transposeUp(),
-    },
-    {
-      keyCode: "Backspace",
+      keyCode: "KeyV",
       label: "shift up",
       action: () => transposeUp(),
     },
