@@ -3,13 +3,13 @@ import styled from "styled-components"
 import { Key } from "./Key"
 import { keyboardRows, keyCodeToLabel } from "./utils"
 
-type Props = {
+export type KeyboardProps = {
   width?: number
-  mode?: "single" | "dual"
+  dualMode?: boolean
   showFullKeyboard?: boolean
   modifierKeys?: ModifierKey[]
   activeKeys: string[]
-  keyMap: KeyMap
+  keyMap: KeyMap | undefined
   onKeyClick?: (midiNote: number) => void
 }
 
@@ -23,13 +23,13 @@ export type ModifierKey = {
 
 export const Keyboard = ({
   width = 1200,
-  mode = "single",
+  dualMode = false,
   showFullKeyboard = false,
   modifierKeys,
   activeKeys,
   keyMap,
   onKeyClick,
-}: Props) => {
+}: KeyboardProps) => {
   const hideModifiers = !showFullKeyboard
 
   const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
@@ -38,10 +38,10 @@ export const Keyboard = ({
     if (showFullKeyboard) {
       return 0
     } else {
-      if (mode === "single") {
-        return baseWidth * shift - baseWidth * 0.5
-      } else {
+      if (dualMode) {
         return baseWidth * shift
+      } else {
+        return baseWidth * shift - baseWidth * 0.5
       }
     }
   }
@@ -60,7 +60,7 @@ export const Keyboard = ({
 
   return (
     <Container $width={width}>
-      <Row $shift={0} $show={mode === "dual" || showFullKeyboard}>
+      <Row $shift={0} $show={dualMode || showFullKeyboard}>
         <Key
           baseWidth={baseWidth}
           size={1}
@@ -83,9 +83,7 @@ export const Keyboard = ({
               handleClick(keyMap?.get(keyboardRows[0][i])?.midiNote)
             }
             modifier={
-              mode === "single"
-                ? optionalModifier([keyboardRows[0][i]])
-                : undefined
+              dualMode ? undefined : optionalModifier([keyboardRows[0][i]])
             }
           />
         ))}
@@ -160,7 +158,7 @@ export const Keyboard = ({
       </Row>
       <Row
         $shift={calculateRowShift(1.25)}
-        $show={mode === "dual" || showFullKeyboard}
+        $show={dualMode || showFullKeyboard}
       >
         <Key
           baseWidth={baseWidth}
@@ -181,9 +179,7 @@ export const Keyboard = ({
               handleClick(keyMap?.get(keyboardRows[3][i])?.midiNote)
             }
             modifier={
-              mode === "single"
-                ? optionalModifier([keyboardRows[3][i]])
-                : undefined
+              dualMode ? undefined : optionalModifier([keyboardRows[3][i]])
             }
           />
         ))}

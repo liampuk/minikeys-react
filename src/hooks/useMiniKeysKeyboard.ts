@@ -15,7 +15,7 @@ export const useMiniKeysKeyboard = (mode: KeyboardMode) => {
       miniKeysKeyboardRef.current = null
       setKeyMap(undefined)
     }
-  }, [])
+  }, [mode])
 
   const transposeDown = () => {
     miniKeysKeyboardRef.current?.shiftLeft()
