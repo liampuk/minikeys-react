@@ -66,11 +66,13 @@ const Container = styled.div<{
 const disabledKeycap = css`
   opacity: 0.3;
   background-color: #eee;
+  border: 1px solid #ccc;
 `
 
 const unplayableKeycap = css`
   opacity: 0.3;
   background-color: #eee;
+  border: 1px solid #ccc;
 `
 
 const activeKeycap = css`
@@ -200,7 +202,7 @@ const Keycap = styled.div<{
   }}
 `
 
-const Label = styled.span<{ $size: number }>`
+const Label = styled.span<{ $size?: number }>`
   font-size: calc(var(--height) * 0.15);
   ${({ $size }) =>
     !$size &&

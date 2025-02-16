@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react"
 import { useEffect } from "react"
+import { createGlobalStyle } from "styled-components"
 
 const preview: Preview = {
   decorators: [
@@ -12,9 +13,20 @@ const preview: Preview = {
         }
       }, [])
 
-      return <Story />
+      return (
+        <>
+          <GlobalStyle />
+          <Story />
+        </>
+      )
     },
   ],
 }
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    padding: 0!important;
+  }
+`
 
 export default preview
