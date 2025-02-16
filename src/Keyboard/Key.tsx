@@ -38,6 +38,7 @@ export const Key = ({
         $colour={modifier?.colour}
       >
         {label}
+        {modifier && <Label>{modifier.label}</Label>}
       </Keycap>
     </Container>
   )
@@ -182,9 +183,17 @@ const Keycap = styled.div<{
     }
   }}
 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   ${({ $size }) => {
     if (!$size) {
       return playableKeycap
     }
   }}
+`
+
+const Label = styled.span`
+  font-size: 1em;
 `

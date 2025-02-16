@@ -1,23 +1,23 @@
-import { KeyboardMode, KeyMap, MiniKeysKeyboard } from "minikeys2"
-import { useEffect, useRef, useState } from "react"
+import { KeyMap } from "minikeys2"
+import { useEffect, useState } from "react"
+import { ModifierKey } from "../Keyboard/Keyboard"
 
 export const useKeyboardControl = (
-  mode: KeyboardMode,
-  playNoteFromMidi?: (midiNote: number, velocity?: number) => void
+  keyMap: KeyMap | undefined,
+  playNoteFromMidi?: (midiNote: number, velocity?: number) => void,
+  modifierKeys?: ModifierKey[]
 ) => {
-  const minikeysKeyboardRef = useRef<MiniKeysKeyboard | null>(null)
-  const [keyMap, setKeyMap] = useState<KeyMap>()
   const [activeKeys, setActiveKeys] = useState<string[]>([])
 
   useEffect(() => {
-    if (!minikeysKeyboardRef.current) {
-      minikeysKeyboardRef.current = new MiniKeysKeyboard(mode)
-      setKeyMap(minikeysKeyboardRef.current.getNoteMap())
-    }
-
     const handleKeyDown = (event: KeyboardEvent) => {
       setActiveKeys((prev) => [...prev, event.code])
-      const keyMap = minikeysKeyboardRef.current?.getNoteMap()
+      const modifierKey = modifierKeys?.find(
+        (modifierKey) => modifierKey.keyCode === event.code
+      )
+      if (modifierKey && !keyMap?.get(event.code)) {
+        modifierKey?.action()
+      }
       const note = keyMap?.get(event.code)?.midiNote
       if (note && playNoteFromMidi) {
         console.log(note)
@@ -35,36 +35,10 @@ export const useKeyboardControl = (
     return () => {
       window.removeEventListener("keydown", handleKeyDown, true)
       window.removeEventListener("keyup", handleKeyUp, true)
-      minikeysKeyboardRef.current = null
     }
-  }, [mode, playNoteFromMidi])
-
-  const transposeDown = () => {
-    minikeysKeyboardRef.current?.shiftLeft()
-    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
-  }
-
-  const transposeUp = () => {
-    minikeysKeyboardRef.current?.shiftRight()
-    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
-  }
-
-  const octaveDown = () => {
-    minikeysKeyboardRef.current?.shiftLeftOctave()
-    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
-  }
-
-  const octaveUp = () => {
-    minikeysKeyboardRef.current?.shiftRightOctave()
-    setKeyMap(minikeysKeyboardRef.current?.getNoteMap())
-  }
+  }, [keyMap, playNoteFromMidi, modifierKeys])
 
   return {
     activeKeys,
-    keyMap,
-    transposeDown,
-    transposeUp,
-    octaveDown,
-    octaveUp,
   }
 }

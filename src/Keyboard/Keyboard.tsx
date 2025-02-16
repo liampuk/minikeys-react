@@ -1,7 +1,5 @@
+import { KeyMap } from "minikeys2"
 import styled from "styled-components"
-import { samples } from "../data"
-import { useKeyboardControl } from "../hooks/useKeyboardControl"
-import { useMiniKeys } from "../hooks/useMiniKeys"
 import { Key } from "./Key"
 import { keyboardRows, keyCodeToLabel } from "./utils"
 
@@ -10,6 +8,9 @@ type Props = {
   mode?: "single" | "dual"
   showFullKeyboard?: boolean
   modifierKeys?: ModifierKey[]
+  activeKeys: string[]
+  keyMap: KeyMap
+  onKeyClick?: (midiNote: number) => void
 }
 
 export type ModifierKey = {
@@ -25,21 +26,13 @@ export const Keyboard = ({
   mode = "single",
   showFullKeyboard = false,
   modifierKeys,
+  activeKeys,
+  keyMap,
+  onKeyClick,
 }: Props) => {
   const hideModifiers = !showFullKeyboard
 
   const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
-
-  const { playNoteFromMidi } = useMiniKeys(samples)
-
-  const {
-    activeKeys,
-    keyMap,
-    transposeDown,
-    transposeUp,
-    octaveDown,
-    octaveUp,
-  } = useKeyboardControl(mode, playNoteFromMidi)
 
   const calculateRowShift = (shift: number) => {
     if (showFullKeyboard) {
@@ -54,9 +47,8 @@ export const Keyboard = ({
   }
 
   const handleClick = (midiNote: number | null | undefined) => {
-    console.log("clicked")
-    if (playNoteFromMidi && midiNote !== null && midiNote !== undefined) {
-      playNoteFromMidi(midiNote)
+    if (onKeyClick && midiNote !== null && midiNote !== undefined) {
+      onKeyClick(midiNote)
     }
   }
 
@@ -204,10 +196,6 @@ export const Keyboard = ({
           modifier={optionalModifier(["ShiftRight"])}
         />
       </Row>
-      <button onClick={() => transposeDown && transposeDown()}>left</button>
-      <button onClick={() => transposeUp && transposeUp()}>right</button>
-      <button onClick={() => octaveDown && octaveDown()}>left</button>
-      <button onClick={() => octaveUp && octaveUp()}>right</button>
     </Container>
   )
 }
@@ -215,7 +203,6 @@ export const Keyboard = ({
 const Container = styled.div<{ $width: number }>`
   width: ${(props) => props.$width}px;
   box-sizing: border-box;
-  /* background-color: #222; */
 
   * {
     box-sizing: border-box;
