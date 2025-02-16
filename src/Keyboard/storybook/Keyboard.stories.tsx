@@ -30,6 +30,11 @@ const InteractiveKeyboard = (props: KeyboardProps) => {
       label: "shift up",
       action: () => transposeUp(),
     },
+    {
+      keyCode: "Backspace",
+      label: "shift up",
+      action: () => transposeUp(),
+    },
   ]
 
   const { activeKeys } = useKeyboardControl(

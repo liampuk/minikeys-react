@@ -31,14 +31,19 @@ export const Keyboard = ({
   onKeyClick,
 }: KeyboardProps) => {
   const hideModifiers = !showFullKeyboard
+  const nonPlayableModifierKey = modifierKeys?.some(
+    (modifierKey) =>
+      !Array.from(keyCodeToLabel.keys()).includes(modifierKey.keyCode)
+  )
 
-  const baseWidth = width / (showFullKeyboard ? 15 : 12.5)
+  const baseWidth =
+    width / (showFullKeyboard || nonPlayableModifierKey ? 15 : 12.5)
 
   const calculateRowShift = (shift: number) => {
     if (showFullKeyboard) {
       return 0
     } else {
-      if (dualMode) {
+      if (dualMode || nonPlayableModifierKey) {
         return baseWidth * shift
       } else {
         return baseWidth * shift - baseWidth * 0.5
@@ -60,11 +65,28 @@ export const Keyboard = ({
 
   return (
     <Container $width={width}>
-      <Row $shift={0} $show={dualMode || showFullKeyboard}>
+      <Row
+        $shift={
+          nonPlayableModifierKey
+            ? modifierKeys?.some((modifierKey) =>
+                ["Escape", "IntlBackslash"].includes(modifierKey.keyCode)
+              )
+              ? 0
+              : calculateRowShift(1)
+            : 0
+        }
+        $show={
+          dualMode ||
+          showFullKeyboard ||
+          !!optionalModifier(["Escape", "IntlBackslash", "Backspace"])
+        }
+      >
         <Key
           baseWidth={baseWidth}
           size={1}
-          hidden={hideModifiers}
+          hidden={
+            hideModifiers && !optionalModifier(["Escape", "IntlBackslash"])
+          }
           label="esc"
           active={
             activeKeys.includes("Escape") ||
@@ -90,17 +112,28 @@ export const Keyboard = ({
         <Key
           baseWidth={baseWidth}
           size={2}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["Backspace"])}
           label="backspace"
           active={activeKeys.includes("Backspace")}
           modifier={optionalModifier(["Backspace"])}
         />
       </Row>
-      <Row $shift={calculateRowShift(0.5)} $show={true}>
+      <Row
+        $shift={
+          nonPlayableModifierKey
+            ? modifierKeys?.some((modifierKey) =>
+                ["Tab"].includes(modifierKey.keyCode)
+              )
+              ? 0
+              : calculateRowShift(1.5)
+            : calculateRowShift(0.5)
+        }
+        $show={true}
+      >
         <Key
           baseWidth={baseWidth}
           size={1.5}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["Tab"])}
           label="tab"
           active={activeKeys.includes("Tab")}
           modifier={optionalModifier(["Tab"])}
@@ -120,17 +153,28 @@ export const Keyboard = ({
         <Key
           baseWidth={baseWidth}
           size={1.5}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["Backquote"])}
           label="\"
           active={activeKeys.includes("Backquote")}
           modifier={optionalModifier(["Backquote"])}
         />
       </Row>
-      <Row $shift={calculateRowShift(0.75)} $show={true}>
+      <Row
+        $shift={
+          nonPlayableModifierKey
+            ? modifierKeys?.some((modifierKey) =>
+                ["CapsLock"].includes(modifierKey.keyCode)
+              )
+              ? 0
+              : calculateRowShift(1.75)
+            : calculateRowShift(0.75)
+        }
+        $show={true}
+      >
         <Key
           baseWidth={baseWidth}
           size={1.75}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["CapsLock"])}
           label="caps lock"
           active={activeKeys.includes("CapsLock")}
           modifier={optionalModifier(["CapsLock"])}
@@ -150,20 +194,32 @@ export const Keyboard = ({
         <Key
           baseWidth={baseWidth}
           size={2.25}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["Enter"])}
           label="enter"
           active={activeKeys.includes("Enter")}
           modifier={optionalModifier(["Enter"])}
         />
       </Row>
       <Row
-        $shift={calculateRowShift(1.25)}
-        $show={dualMode || showFullKeyboard}
+        $shift={
+          nonPlayableModifierKey
+            ? modifierKeys?.some(
+                (modifierKey) => modifierKey.keyCode === "ShiftLeft"
+              )
+              ? 0
+              : calculateRowShift(2.25)
+            : calculateRowShift(1.25)
+        }
+        $show={
+          dualMode ||
+          showFullKeyboard ||
+          !!optionalModifier(["ShiftLeft", "ShiftRight"])
+        }
       >
         <Key
           baseWidth={baseWidth}
           size={2.25}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["ShiftLeft"])}
           label="shift"
           active={activeKeys.includes("ShiftLeft")}
           modifier={optionalModifier(["ShiftLeft"])}
@@ -186,7 +242,7 @@ export const Keyboard = ({
         <Key
           baseWidth={baseWidth}
           size={2.75}
-          hidden={hideModifiers}
+          hidden={hideModifiers && !optionalModifier(["ShiftRight"])}
           label="shift"
           active={activeKeys.includes("ShiftRight")}
           modifier={optionalModifier(["ShiftRight"])}
