@@ -3,6 +3,15 @@ import styled from "styled-components"
 import { Key } from "./Key"
 import { keyboardRows, keyCodeToLabel } from "./utils"
 
+export type ModifierKey = {
+  keyCode: string
+  label: string
+  action: () => void
+  actionOnRelease?: () => void
+  bgColour?: string
+  colour?: string
+}
+
 export type KeyboardProps = {
   width?: number
   dualMode?: boolean
@@ -11,14 +20,6 @@ export type KeyboardProps = {
   activeKeys: string[]
   keyMap: KeyMap | undefined
   onKeyClick?: (midiNote: number) => void
-}
-
-export type ModifierKey = {
-  keyCode: string
-  label: string
-  action: () => void
-  bgColour?: string
-  colour?: string
 }
 
 export const Keyboard = ({

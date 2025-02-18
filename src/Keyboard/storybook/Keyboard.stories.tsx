@@ -1,5 +1,5 @@
 import { StoryObj } from "@storybook/react/*"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { samples } from "../../data"
 import { useKeyboardControl } from "../../hooks/useKeyboardControl"
 import { useMiniKeys } from "../../hooks/useMiniKeys"
@@ -120,6 +120,14 @@ const InteractiveSingleKeyboardWithColour = (props: KeyboardProps) => {
   const { keyMap, transposeDown, transposeUp, octaveDown, octaveUp } =
     useMiniKeysKeyboard(dualModeToggle ? "dual" : "single")
 
+  useEffect(() => {
+    setDualModeToggle(props.dualMode)
+  }, [props.dualMode])
+
+  useEffect(() => {
+    setShowFullKeyboardToggle(props.showFullKeyboard)
+  }, [props.showFullKeyboard])
+
   const modifierKeys: ModifierKey[] = [
     {
       keyCode: "ShiftLeft",
@@ -176,6 +184,63 @@ const InteractiveSingleKeyboardWithColour = (props: KeyboardProps) => {
       {...props}
       dualMode={dualModeToggle}
       showFullKeyboard={showFullKeyboardToggle}
+      activeKeys={activeKeys}
+      keyMap={keyMap}
+      onKeyClick={playNoteFromMidi}
+      modifierKeys={modifierKeys}
+    />
+  )
+}
+
+const InteractiveSingleKeyboardWithSustain = (props: KeyboardProps) => {
+  const { playNoteFromMidi, setSustain } = useMiniKeys(samples)
+  const { keyMap, transposeDown, transposeUp, octaveDown, octaveUp } =
+    useMiniKeysKeyboard(props?.dualMode ? "dual" : "single")
+
+  const modifierKeys: ModifierKey[] = [
+    {
+      keyCode: "KeyZ",
+      label: "octave down",
+      action: () => octaveDown(),
+    },
+    {
+      keyCode: "KeyX",
+      label: "octave up",
+      action: () => octaveUp(),
+    },
+    {
+      keyCode: "KeyC",
+      label: "shift down",
+      action: () => transposeDown(),
+    },
+    {
+      keyCode: "KeyV",
+      label: "shift up",
+      action: () => transposeUp(),
+    },
+    {
+      keyCode: "ShiftLeft",
+      label: "sustain",
+      action: () => setSustain(true),
+      actionOnRelease: () => setSustain(false),
+    },
+    {
+      keyCode: "ShiftRight",
+      label: "sustain",
+      action: () => setSustain(true),
+      actionOnRelease: () => setSustain(false),
+    },
+  ]
+
+  const { activeKeys } = useKeyboardControl(
+    keyMap,
+    playNoteFromMidi,
+    modifierKeys
+  )
+
+  return (
+    <Keyboard
+      {...props}
       activeKeys={activeKeys}
       keyMap={keyMap}
       onKeyClick={playNoteFromMidi}
@@ -244,6 +309,18 @@ export const FullSingleKeyboardWithColour: Story = {
           backgroundColor: "rgb(255, 252, 240)",
         }}
       >
+        <Story />
+      </div>
+    ),
+  ],
+}
+
+export const FullSingleKeyboardWithSustain: Story = {
+  args: { ...defaultArgs, showFullKeyboard: true },
+  render: InteractiveSingleKeyboardWithSustain,
+  decorators: [
+    (Story) => (
+      <div style={{ padding: "1em" }}>
         <Story />
       </div>
     ),

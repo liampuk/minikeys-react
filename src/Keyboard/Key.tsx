@@ -60,7 +60,7 @@ const Container = styled.div<{
   height: var(--height);
   opacity: ${(props) => (props.$hiddenOpacity ? 0 : 1)};
   display: ${(props) => (props.$hidden ? "none" : "block")};
-  padding: calc(var(--height) * 0.07);
+  padding: calc(var(--height) * 0.05);
 `
 
 const disabledKeycap = css`
@@ -204,9 +204,11 @@ const Keycap = styled.div<{
 
 const Label = styled.span<{ $size?: number }>`
   font-size: calc(var(--height) * 0.15);
+  opacity: 0.8;
+
   ${({ $size }) =>
     !$size &&
     css`
       text-align: center;
-    `}
+    `};
 `

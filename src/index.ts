@@ -1,2 +1,2 @@
-export * from "./Button/Button"
 export * from "./hooks/useMiniKeys"
+export * from "./Keyboard/Keyboard"

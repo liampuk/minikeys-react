@@ -20,13 +20,18 @@ export const useKeyboardControl = (
       }
       const note = keyMap?.get(event.code)?.midiNote
       if (note && playNoteFromMidi) {
-        console.log(note)
         playNoteFromMidi(note)
       }
     }
 
     const handleKeyUp = (event: KeyboardEvent) => {
       setActiveKeys((prev) => prev.filter((code) => code !== event.code))
+      const modifierKey = modifierKeys?.find(
+        (modifierKey) => modifierKey.keyCode === event.code
+      )
+      if (modifierKey && !keyMap?.get(event.code)) {
+        modifierKey?.actionOnRelease && modifierKey?.actionOnRelease()
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown, true)

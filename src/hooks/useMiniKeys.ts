@@ -7,6 +7,7 @@ export const useMiniKeys = (samples: Sample[]) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
+  const [sustain, setSustain] = useState(false)
 
   useEffect(() => {
     if (!minikeysRef.current) {
@@ -17,6 +18,13 @@ export const useMiniKeys = (samples: Sample[]) => {
       minikeysRef.current = null
     }
   }, [])
+
+  const setMiniKeysSustain = (sustain: boolean) => {
+    if (minikeysRef.current) {
+      minikeysRef.current.setSustain(sustain)
+      setSustain(sustain)
+    }
+  }
 
   useEffect(() => {
     if (minikeysRef.current) {
@@ -41,6 +49,8 @@ export const useMiniKeys = (samples: Sample[]) => {
     playNoteFromMidi: minikeysRef.current
       ? minikeysRef.current.playNoteFromMidi
       : undefined,
+    setSustain: setMiniKeysSustain,
+    sustain,
     isLoading,
     isSuccess,
     isError,
