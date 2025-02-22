@@ -1,4 +1,4 @@
-import { keyboardBlackNotes, midiNoteMap } from "minikeys2"
+import { keyboardBlackNotes, noteToMidi } from "minikeys"
 import { PianoKeyRect } from "./PianoKey"
 import { NoteLabel } from "./commonStyles"
 import { Highlights } from "./types"
@@ -11,6 +11,7 @@ type Props = {
   baseNoteOffset: number
   showLabels: boolean
   highlights?: Highlights
+  noBorder?: boolean
   handleClick?: (midiNote: number | null | undefined) => void
 }
 
@@ -22,6 +23,7 @@ export const BlackNotes = ({
   baseNoteOffset,
   showLabels,
   highlights,
+  noBorder,
   handleClick,
 }: Props) => {
   const keyWidth =
@@ -30,7 +32,6 @@ export const BlackNotes = ({
 
   const getFill = (i: number) => {
     const note = keyboardBlackNotes[baseNoteOffset + i]
-    console.log(note)
     if (note !== null) {
       if (highlights?.activeNotes?.includes(note)) {
         return "#444"
@@ -58,7 +59,7 @@ export const BlackNotes = ({
     if (namedNote === null) {
       return
     }
-    const midiNote = midiNoteMap[namedNote]
+    const midiNote = noteToMidi[namedNote]
     handleClick(midiNote)
   }
 
@@ -78,6 +79,7 @@ export const BlackNotes = ({
             strokeWidth={1.5}
             fill={getFill(i)}
             type="black"
+            noBorder={noBorder}
           />
           {showLabels &&
             i * keyWidth - (i * strokeWidth) / 2 > 5 &&

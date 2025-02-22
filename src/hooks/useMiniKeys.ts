@@ -1,10 +1,10 @@
-import { MiniKeys, Sample } from "minikeys2"
+import { MiniKeys, Sample } from "minikeys"
 import { useEffect, useRef, useState } from "react"
 
 export const useMiniKeys = (samples: Sample[]) => {
   const minikeysRef = useRef<MiniKeys | null>(null)
   const [progress, setProgress] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
   const [sustain, setSustain] = useState(false)

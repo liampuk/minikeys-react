@@ -1,4 +1,4 @@
-import { KeyMap } from "minikeys2"
+import { KeyMap, midiToNote, NoteName } from "minikeys"
 import { useEffect, useState } from "react"
 import { ModifierKey } from "../Keyboard/Keyboard"
 
@@ -7,14 +7,21 @@ export const useKeyboardControl = (
   playNoteFromMidi?: (midiNote: number, velocity?: number) => void,
   modifierKeys?: ModifierKey[]
 ) => {
-  const [activeKeys, setActiveKeys] = useState<string[]>([])
+  const [activeKeys, setActiveKeys] = useState<
+    { keyCode: string; note?: NoteName }[]
+  >([])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      setActiveKeys((prev) => [...prev, event.code])
       const modifierKey = modifierKeys?.find(
         (modifierKey) => modifierKey.keyCode === event.code
       )
+      if (
+        !modifierKey &&
+        activeKeys.some((key) => key.keyCode === event.code)
+      ) {
+        return
+      }
       if (modifierKey && !keyMap?.get(event.code)) {
         modifierKey?.action()
       }
@@ -22,10 +29,14 @@ export const useKeyboardControl = (
       if (note && playNoteFromMidi) {
         playNoteFromMidi(note)
       }
+      setActiveKeys((prev) => [
+        ...prev,
+        { keyCode: event.code, note: note ? midiToNote[note] : undefined },
+      ])
     }
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      setActiveKeys((prev) => prev.filter((code) => code !== event.code))
+      setActiveKeys((prev) => prev.filter((key) => key.keyCode !== event.code))
       const modifierKey = modifierKeys?.find(
         (modifierKey) => modifierKey.keyCode === event.code
       )

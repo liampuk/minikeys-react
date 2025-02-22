@@ -1,7 +1,8 @@
-import { keyboardWhiteNotes, midiNoteMap } from "minikeys2"
+import { keyboardWhiteNotes, noteToMidi } from "minikeys"
 import { PianoKeyRect } from "./PianoKey"
 import { NoteLabel } from "./commonStyles"
 import { Highlights } from "./types"
+import { nextWhiteNoteIndex, prevWhiteNoteIndex } from "./utils"
 
 type Props = {
   numKeys: number
@@ -12,6 +13,7 @@ type Props = {
   baseNoteOffset: number
   showLabels: boolean
   highlights?: Highlights
+  noBorder?: boolean
   handleClick?: (midiNote: number | null | undefined) => void
 }
 
@@ -24,6 +26,7 @@ export const WhiteNotes = ({
   baseNoteOffset,
   showLabels,
   highlights,
+  noBorder,
   handleClick,
 }: Props) => {
   const keyWidth =
@@ -39,8 +42,8 @@ export const WhiteNotes = ({
       if (
         keyboardWhiteNotes
           .slice(
-            keyboardWhiteNotes.indexOf(highlights?.rangeStart ?? "A0"),
-            keyboardWhiteNotes.indexOf(highlights?.rangeEnd ?? "C8") + 1
+            nextWhiteNoteIndex(highlights?.rangeStart ?? "A0"),
+            prevWhiteNoteIndex(highlights?.rangeEnd ?? "C8") + 1
           )
           .includes(keyboardWhiteNotes[baseNoteOffset + i])
       ) {
@@ -55,7 +58,7 @@ export const WhiteNotes = ({
       return
     }
     const namedNote = keyboardWhiteNotes[baseNoteOffset + i]
-    const midiNote = midiNoteMap[namedNote]
+    const midiNote = noteToMidi[namedNote]
     handleClick(midiNote)
   }
 
@@ -69,6 +72,7 @@ export const WhiteNotes = ({
         strokeColour={strokeColour}
         type="white"
         fill={getFill(i)}
+        noBorder={noBorder}
       />
       {showLabels && (
         <NoteLabel

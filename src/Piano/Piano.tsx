@@ -1,4 +1,5 @@
-import { keyboardWhiteNotes } from "minikeys2"
+import { keyboardWhiteNotes } from "minikeys"
+import styled from "styled-components"
 import { BlackNotes } from "./BlackNotes"
 import { WhiteNotes } from "./WhiteNotes"
 import { Highlights } from "./types"
@@ -14,6 +15,7 @@ export type PianoProps = {
   baseNote?: WhiteNote
   showLabels?: boolean
   highlights?: Highlights
+  noBorder?: boolean
   onClick?: (midiNote: number) => void
 }
 
@@ -25,8 +27,10 @@ export const Piano = ({
   strokeColour,
   baseNote = "C4",
   showLabels = false,
+  noBorder = false,
   highlights,
   onClick,
+  ...props
 }: PianoProps) => {
   const keyHeight = height ?? Math.min((width / numKeys) * 5, width / 4)
   const maxNumKeys = Math.min(numKeys, 52)
@@ -43,39 +47,44 @@ export const Piano = ({
   }
 
   return (
-    <div>
-      <svg
-        viewBox={`0 0 ${width} ${keyHeight}`}
-        width={width}
-        height={keyHeight}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g>
-          <WhiteNotes
-            numKeys={maxNumKeys}
-            width={width}
-            height={keyHeight}
-            strokeWidth={strokeWidth}
-            strokeColour={strokeColour}
-            baseNoteOffset={baseNoteOffset}
-            showLabels={showLabels}
-            highlights={highlights}
-            handleClick={handleClick}
-          />
-        </g>
-        <g>
-          <BlackNotes
-            numKeys={maxNumKeys}
-            width={width}
-            height={keyHeight}
-            strokeWidth={strokeWidth}
-            baseNoteOffset={baseNoteOffset}
-            showLabels={showLabels}
-            highlights={highlights}
-            handleClick={handleClick}
-          />
-        </g>
-      </svg>
-    </div>
+    <Svg
+      viewBox={`0 0 ${width} ${keyHeight}`}
+      width={width}
+      height={keyHeight}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g>
+        <WhiteNotes
+          numKeys={maxNumKeys}
+          width={width}
+          height={keyHeight}
+          strokeWidth={strokeWidth}
+          strokeColour={strokeColour}
+          baseNoteOffset={baseNoteOffset}
+          showLabels={showLabels}
+          highlights={highlights}
+          handleClick={handleClick}
+          noBorder={noBorder}
+        />
+      </g>
+      <g>
+        <BlackNotes
+          numKeys={maxNumKeys}
+          width={width}
+          height={keyHeight}
+          strokeWidth={strokeWidth}
+          baseNoteOffset={baseNoteOffset}
+          showLabels={showLabels}
+          highlights={highlights}
+          handleClick={handleClick}
+          noBorder={noBorder}
+        />
+      </g>
+    </Svg>
   )
 }
+
+const Svg = styled.svg`
+  user-select: none;
+`

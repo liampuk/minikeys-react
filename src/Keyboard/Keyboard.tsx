@@ -1,7 +1,13 @@
-import { KeyMap } from "minikeys2"
+import { KeyMap } from "minikeys"
+import { useMemo } from "react"
 import styled from "styled-components"
 import { Key } from "./Key"
-import { keyboardRows, keyCodeToLabel } from "./utils"
+import {
+  getDisplayMap,
+  keyboardRows,
+  keyCodeToLabel,
+  optionalModifier,
+} from "./utils"
 
 export type ModifierKey = {
   keyCode: string
@@ -19,6 +25,7 @@ export type KeyboardProps = {
   modifierKeys?: ModifierKey[]
   activeKeys: string[]
   keyMap: KeyMap | undefined
+  animate?: boolean
   onKeyClick?: (midiNote: number) => void
 }
 
@@ -29,9 +36,9 @@ export const Keyboard = ({
   modifierKeys,
   activeKeys,
   keyMap,
+  animate = false,
   onKeyClick,
 }: KeyboardProps) => {
-  const hideModifiers = !showFullKeyboard
   const nonPlayableModifierKey = modifierKeys?.some(
     (modifierKey) =>
       !Array.from(keyCodeToLabel.keys()).includes(modifierKey.keyCode)
@@ -58,11 +65,10 @@ export const Keyboard = ({
     }
   }
 
-  const optionalModifier = (keyCodes: string[]) => {
-    return modifierKeys?.find((modifierKey) =>
-      keyCodes.includes(modifierKey.keyCode)
-    )
-  }
+  const displayMap = useMemo(
+    () => getDisplayMap(showFullKeyboard, dualMode, modifierKeys),
+    [showFullKeyboard, dualMode, modifierKeys]
+  )
 
   return (
     <Container $width={width}>
@@ -74,34 +80,29 @@ export const Keyboard = ({
               )
               ? 0
               : calculateRowShift(1)
-            : 0
+            : calculateRowShift(0)
         }
         $show={
-          dualMode ||
-          showFullKeyboard ||
-          !!optionalModifier([
-            ...keyboardRows[0],
-            "Escape",
-            "IntlBackslash",
-            "Backspace",
-          ])
+          displayMap.get("Escape") !== null ||
+          displayMap.get("Backspace") !== null ||
+          keyboardRows[0].some((key) => displayMap.get(key) !== null)
         }
       >
         <Key
+          delayDisplay={animate ? displayMap.get("Escape") : null}
           baseWidth={baseWidth}
           size={1}
-          hidden={
-            hideModifiers && !optionalModifier(["Escape", "IntlBackslash"])
-          }
+          hidden={displayMap.get("Escape") === null}
           label="esc"
           active={
             activeKeys.includes("Escape") ||
             activeKeys.includes("IntlBackslash")
           }
-          modifier={optionalModifier(["Escape", "IntlBackslash"])}
+          modifier={optionalModifier(["Escape", "IntlBackslash"], modifierKeys)}
         ></Key>
         {Array.from({ length: 12 }).map((_, i) => (
           <Key
+            delayDisplay={animate ? displayMap.get(keyboardRows[0][i]) : null}
             baseWidth={baseWidth}
             key={i}
             label={keyCodeToLabel.get(keyboardRows[0][i])}
@@ -110,23 +111,22 @@ export const Keyboard = ({
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[0][i])?.midiNote)
             }
-            hiddenOpacity={
-              !dualMode &&
-              !showFullKeyboard &&
-              (dualMode ? false : !optionalModifier([keyboardRows[0][i]]))
-            }
+            hiddenOpacity={!displayMap.get(keyboardRows[0][i])}
             modifier={
-              dualMode ? undefined : optionalModifier([keyboardRows[0][i]])
+              dualMode
+                ? undefined
+                : optionalModifier([keyboardRows[0][i]], modifierKeys)
             }
           />
         ))}
         <Key
+          delayDisplay={animate ? displayMap.get("Backspace") : null}
           baseWidth={baseWidth}
           size={2}
-          hidden={hideModifiers && !optionalModifier(["Backspace"])}
+          hidden={!displayMap.get("Backspace")}
           label="backspace"
           active={activeKeys.includes("Backspace")}
-          modifier={optionalModifier(["Backspace"])}
+          modifier={optionalModifier(["Backspace"], modifierKeys)}
         />
       </Row>
       <Row
@@ -142,15 +142,17 @@ export const Keyboard = ({
         $show={true}
       >
         <Key
+          delayDisplay={animate ? displayMap.get("Tab") : null}
           baseWidth={baseWidth}
           size={1.5}
-          hidden={hideModifiers && !optionalModifier(["Tab"])}
+          hidden={!displayMap.get("Tab")}
           label="tab"
           active={activeKeys.includes("Tab")}
-          modifier={optionalModifier(["Tab"])}
+          modifier={optionalModifier(["Tab"], modifierKeys)}
         />
         {Array.from({ length: 12 }).map((_, i) => (
           <Key
+            delayDisplay={animate ? displayMap.get(keyboardRows[1][i]) : null}
             baseWidth={baseWidth}
             key={i}
             label={keyCodeToLabel.get(keyboardRows[1][i])}
@@ -162,12 +164,13 @@ export const Keyboard = ({
           />
         ))}
         <Key
+          delayDisplay={animate ? displayMap.get("Backquote") : null}
           baseWidth={baseWidth}
           size={1.5}
-          hidden={hideModifiers && !optionalModifier(["Backquote"])}
+          hidden={!displayMap.get("Backquote")}
           label="\"
           active={activeKeys.includes("Backquote")}
-          modifier={optionalModifier(["Backquote"])}
+          modifier={optionalModifier(["Backquote"], modifierKeys)}
         />
       </Row>
       <Row
@@ -183,15 +186,21 @@ export const Keyboard = ({
         $show={true}
       >
         <Key
+          delayDisplay={animate ? displayMap.get("CapsLock") : null}
           baseWidth={baseWidth}
           size={1.75}
-          hidden={hideModifiers && !optionalModifier(["CapsLock"])}
+          hidden={!displayMap.get("CapsLock")}
           label="caps lock"
           active={activeKeys.includes("CapsLock")}
-          modifier={optionalModifier(["CapsLock"])}
+          modifier={optionalModifier(["CapsLock"], modifierKeys)}
+          indicator={
+            optionalModifier(["CapsLock"], modifierKeys) &&
+            (activeKeys.includes("CapsLock") ? "active" : "inactive")
+          }
         />
         {Array.from({ length: 11 }).map((_, i) => (
           <Key
+            delayDisplay={animate ? displayMap.get(keyboardRows[2][i]) : null}
             baseWidth={baseWidth}
             key={i}
             label={keyCodeToLabel.get(keyboardRows[2][i])}
@@ -203,12 +212,13 @@ export const Keyboard = ({
           />
         ))}
         <Key
+          delayDisplay={animate ? displayMap.get("Enter") : null}
           baseWidth={baseWidth}
           size={2.25}
-          hidden={hideModifiers && !optionalModifier(["Enter"])}
+          hidden={!displayMap.get("Enter")}
           label="enter"
           active={activeKeys.includes("Enter")}
-          modifier={optionalModifier(["Enter"])}
+          modifier={optionalModifier(["Enter"], modifierKeys)}
         />
       </Row>
       <Row
@@ -222,21 +232,23 @@ export const Keyboard = ({
             : calculateRowShift(1.25)
         }
         $show={
-          dualMode ||
-          showFullKeyboard ||
-          !!optionalModifier([...keyboardRows[3], "ShiftLeft", "ShiftRight"])
+          displayMap.get("ShiftLeft") !== null ||
+          displayMap.get("ShiftRight") !== null ||
+          keyboardRows[3].some((key) => displayMap.get(key) !== null)
         }
       >
         <Key
+          delayDisplay={animate ? displayMap.get("ShiftLeft") : null}
           baseWidth={baseWidth}
           size={2.25}
-          hidden={hideModifiers && !optionalModifier(["ShiftLeft"])}
+          hidden={!displayMap.get("ShiftLeft")}
           label="shift"
           active={activeKeys.includes("ShiftLeft")}
-          modifier={optionalModifier(["ShiftLeft"])}
+          modifier={optionalModifier(["ShiftLeft"], modifierKeys)}
         />
         {Array.from({ length: 10 }).map((_, i) => (
           <Key
+            delayDisplay={animate ? displayMap.get(keyboardRows[3][i]) : null}
             baseWidth={baseWidth}
             key={i}
             label={keyCodeToLabel.get(keyboardRows[3][i])}
@@ -245,23 +257,22 @@ export const Keyboard = ({
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[3][i])?.midiNote)
             }
-            hiddenOpacity={
-              !dualMode &&
-              !showFullKeyboard &&
-              (dualMode ? false : !optionalModifier([keyboardRows[3][i]]))
-            }
+            hiddenOpacity={!displayMap.get(keyboardRows[3][i])}
             modifier={
-              dualMode ? undefined : optionalModifier([keyboardRows[3][i]])
+              dualMode
+                ? undefined
+                : optionalModifier([keyboardRows[3][i]], modifierKeys)
             }
           />
         ))}
         <Key
+          delayDisplay={animate ? displayMap.get("ShiftRight") : null}
           baseWidth={baseWidth}
           size={2.75}
-          hidden={hideModifiers && !optionalModifier(["ShiftRight"])}
+          hidden={!displayMap.get("ShiftRight")}
           label="shift"
           active={activeKeys.includes("ShiftRight")}
-          modifier={optionalModifier(["ShiftRight"])}
+          modifier={optionalModifier(["ShiftRight"], modifierKeys)}
         />
       </Row>
     </Container>

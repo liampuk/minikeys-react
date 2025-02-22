@@ -7,6 +7,7 @@ type Props = {
   fill?: string
   strokeWidth: number
   strokeColour?: string
+  noBorder?: boolean
   type: "black" | "white"
 }
 
@@ -17,6 +18,7 @@ export const PianoKeyRect = ({
   fill,
   strokeWidth,
   strokeColour,
+  noBorder,
   type,
 }: Props) => {
   const curve = height * 0.025
@@ -24,16 +26,24 @@ export const PianoKeyRect = ({
     <Path
       $type={type}
       d={`
-    M${width + offset} ${type === "white" ? strokeWidth / 2 : 0},
-    L${width + offset} ${height - curve - strokeWidth / 2},
+    M${width + (noBorder ? offset - strokeWidth : offset)} ${
+        type === "white" ? (noBorder ? 0 : strokeWidth / 2) : 0
+      },
+    L${width + (noBorder ? offset - strokeWidth : offset)} ${
+        height - curve - strokeWidth / 2
+      },
     q0,${curve} -${curve},${curve},
     L${offset + curve + strokeWidth / 2} ${height - strokeWidth / 2},
     q-${curve},0 -${curve},-${curve},
-    L${offset + strokeWidth / 2} ${type === "white" ? strokeWidth / 2 : 0},
+    L${offset + strokeWidth / 2} ${
+        type === "white" ? (noBorder ? 0 : strokeWidth / 2) : 0
+      },
     Z
     `}
       fill={fill ?? (type === "white" ? "white" : "#222")}
-      stroke={type === "white" ? strokeColour ?? "black" : "none"}
+      stroke={
+        noBorder ? "none" : type === "white" ? strokeColour ?? "black" : "none"
+      }
       strokeWidth={strokeWidth}
     />
   )

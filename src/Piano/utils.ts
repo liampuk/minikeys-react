@@ -1,3 +1,5 @@
+import { NoteName } from "minikeys"
+
 // prettier-ignore
 export const keyboardBlackNotes = [
   null, 
@@ -23,3 +25,27 @@ export const keyboardWhiteNotes = [
   'C7', 'D7', 'E7', 'F7', 'G7', 'A7', 'B7',
   'C8'
 ] as const;
+
+type WhiteNote = (typeof keyboardWhiteNotes)[number]
+
+export const nextWhiteNoteIndex = (note: NoteName) => {
+  const whiteNote = note.replace("#", "")
+  if (keyboardWhiteNotes.includes(whiteNote as WhiteNote)) {
+    if (note.includes("#")) {
+      return keyboardWhiteNotes.indexOf(whiteNote as WhiteNote) + 1
+    } else {
+      return keyboardWhiteNotes.indexOf(whiteNote as WhiteNote)
+    }
+  } else {
+    throw new Error(`Lower range note ${note} invalid`)
+  }
+}
+
+export const prevWhiteNoteIndex = (note: NoteName) => {
+  const whiteNote = note.replace("#", "")
+  if (keyboardWhiteNotes.includes(whiteNote as WhiteNote)) {
+    return keyboardWhiteNotes.indexOf(whiteNote as WhiteNote)
+  } else {
+    throw new Error(`Lower range note ${note} invalid`)
+  }
+}

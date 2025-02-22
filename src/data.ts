@@ -1,4 +1,4 @@
-import { Sample } from "minikeys2"
+import { Sample } from "minikeys"
 
 export const samples: Sample[] = [
   {

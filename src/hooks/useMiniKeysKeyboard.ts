@@ -1,9 +1,10 @@
-import { KeyboardMode, KeyMap, MiniKeysKeyboard } from "minikeys2"
+import { KeyboardMode, KeyMap, MiniKeysKeyboard } from "minikeys"
 import { useEffect, useRef, useState } from "react"
 
 export const useMiniKeysKeyboard = (mode: KeyboardMode) => {
   const miniKeysKeyboardRef = useRef<MiniKeysKeyboard | null>(null)
   const [keyMap, setKeyMap] = useState<KeyMap>()
+  const noteRange = miniKeysKeyboardRef.current?.getNoteRange()
 
   useEffect(() => {
     if (!miniKeysKeyboardRef.current) {
@@ -39,6 +40,7 @@ export const useMiniKeysKeyboard = (mode: KeyboardMode) => {
 
   return {
     keyMap,
+    noteRange,
     transposeDown,
     transposeUp,
     octaveDown,

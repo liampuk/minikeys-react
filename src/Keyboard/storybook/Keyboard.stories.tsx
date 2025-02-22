@@ -11,6 +11,7 @@ type Story = StoryObj<typeof Keyboard>
 const defaultArgs: Partial<KeyboardProps> = {
   width: 1200,
   dualMode: false,
+  animate: true,
   showFullKeyboard: false,
 }
 
@@ -67,6 +68,7 @@ const InteractiveSingleKeyboard = (props: KeyboardProps) => {
   return (
     <Keyboard
       {...props}
+      animate={false}
       activeKeys={activeKeys}
       keyMap={keyMap}
       onKeyClick={playNoteFromMidi}
@@ -76,10 +78,14 @@ const InteractiveSingleKeyboard = (props: KeyboardProps) => {
 }
 
 const InteractiveDualKeyboard = (props: KeyboardProps) => {
-  const { playNoteFromMidi } = useMiniKeys(samples)
+  const { playNoteFromMidi, setSustain } = useMiniKeys(samples)
   const { keyMap, octaveDown, octaveUp } = useMiniKeysKeyboard(
     props?.dualMode ? "dual" : "single"
   )
+
+  useEffect(() => {
+    setSustain(true)
+  }, [])
 
   const modifierKeys: ModifierKey[] = [
     {
@@ -197,38 +203,87 @@ const InteractiveSingleKeyboardWithSustain = (props: KeyboardProps) => {
   const { keyMap, transposeDown, transposeUp, octaveDown, octaveUp } =
     useMiniKeysKeyboard(props?.dualMode ? "dual" : "single")
 
+  const [leftSustain, setLeftSustain] = useState(false)
+  const [rightSustain, setRightSustain] = useState(false)
+  const [capsLock, setCapsLock] = useState(false)
+
+  const disableLeftSustain = () => {
+    if (!setSustain) return
+    setLeftSustain(false)
+    if (!rightSustain && !capsLock) {
+      setSustain(false)
+    }
+  }
+
+  const disableRightSustain = () => {
+    if (!setSustain) return
+    setRightSustain(false)
+    if (!leftSustain && !capsLock) {
+      setSustain(false)
+    }
+  }
+
+  const disableCapsLockSustain = () => {
+    if (!setSustain) return
+    setCapsLock(false)
+    if (!leftSustain && !rightSustain) {
+      setSustain(false)
+    }
+  }
+
+  const enableSustain = (fn: () => void) => {
+    if (!setSustain) return
+    fn()
+    setSustain(true)
+  }
+
+  const modKeyColour = "#f0f0f0"
+
   const modifierKeys: ModifierKey[] = [
     {
-      keyCode: "KeyZ",
-      label: "octave down",
-      action: () => octaveDown(),
-    },
-    {
-      keyCode: "KeyX",
-      label: "octave up",
-      action: () => octaveUp(),
-    },
-    {
-      keyCode: "KeyC",
-      label: "shift down",
-      action: () => transposeDown(),
-    },
-    {
-      keyCode: "KeyV",
-      label: "shift up",
-      action: () => transposeUp(),
+      keyCode: "CapsLock",
+      label: "sustain",
+      action: () => enableSustain(() => setCapsLock(true)),
+      actionOnRelease: () => disableCapsLockSustain(),
+      bgColour: modKeyColour,
     },
     {
       keyCode: "ShiftLeft",
       label: "sustain",
-      action: () => setSustain(true),
-      actionOnRelease: () => setSustain(false),
+      action: () => enableSustain(() => setLeftSustain(true)),
+      actionOnRelease: () => disableLeftSustain(),
+      bgColour: modKeyColour,
     },
     {
       keyCode: "ShiftRight",
       label: "sustain",
-      action: () => setSustain(true),
-      actionOnRelease: () => setSustain(false),
+      action: () => enableSustain(() => setRightSustain(true)),
+      actionOnRelease: () => disableRightSustain(),
+      bgColour: modKeyColour,
+    },
+    {
+      keyCode: "KeyV",
+      label: "octave down",
+      action: () => octaveDown(),
+      bgColour: modKeyColour,
+    },
+    {
+      keyCode: "KeyB",
+      label: "octave up",
+      action: () => octaveUp(),
+      bgColour: modKeyColour,
+    },
+    {
+      keyCode: "KeyN",
+      label: "transpose down",
+      action: () => transposeDown(),
+      bgColour: modKeyColour,
+    },
+    {
+      keyCode: "KeyM",
+      label: "transpose up",
+      action: () => transposeUp(),
+      bgColour: modKeyColour,
     },
   ]
 
@@ -261,7 +316,7 @@ export const SingleKeyboardNoModifiers: Story = {
   ],
 }
 
-export const SingleKeyboard: Story = {
+export const SingleKeyboardNoAnimation: Story = {
   args: defaultArgs,
   render: InteractiveSingleKeyboard,
   decorators: [
@@ -273,7 +328,7 @@ export const SingleKeyboard: Story = {
   ],
 }
 
-export const FullSingleKeyboard: Story = {
+export const FullSingleKeyboardNoAnimation: Story = {
   args: { ...defaultArgs, showFullKeyboard: true },
   render: InteractiveSingleKeyboard,
   decorators: [

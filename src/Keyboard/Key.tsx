@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react"
 import styled, { css } from "styled-components"
+import { Indicator } from "./Indicator"
 import { ModifierKey } from "./Keyboard"
 
 type Props = {
@@ -11,6 +13,8 @@ type Props = {
   disabled?: boolean
   keyType?: "black" | "white" | "disabled" | "modifier"
   modifier?: ModifierKey
+  delayDisplay?: number | null
+  indicator?: "active" | "inactive"
   onClick?: () => void
 }
 
@@ -23,14 +27,29 @@ export const Key = ({
   active,
   keyType,
   modifier,
+  delayDisplay,
+  indicator,
   onClick,
 }: Props) => {
+  const [hide, setHide] = useState(
+    delayDisplay !== undefined && delayDisplay !== null
+  )
+
+  useEffect(() => {
+    if (hide) {
+      setTimeout(() => {
+        setHide(false)
+      }, (delayDisplay ?? 0) * 10)
+    }
+  }, [])
+
   return (
     <Container
       $hidden={hidden}
       $hiddenOpacity={hiddenOpacity}
       $width={baseWidth * (size ?? 1)}
       $height={baseWidth}
+      $hide={hide}
     >
       <Keycap
         $size={size}
@@ -41,9 +60,9 @@ export const Key = ({
         $colour={modifier?.colour}
       >
         {label}
-        {}
         {modifier && <Label $size={size}>{modifier.label}</Label>}
       </Keycap>
+      {indicator && <Indicator state={indicator} />}
     </Container>
   )
 }
@@ -53,24 +72,36 @@ const Container = styled.div<{
   $hiddenOpacity?: boolean
   $width: number
   $height: number
+  $hide: boolean
 }>`
   --width: ${(props) => props.$width}px;
   --height: ${(props) => props.$height}px;
   width: var(--width);
   height: var(--height);
-  opacity: ${(props) => (props.$hiddenOpacity ? 0 : 1)};
+  /* opacity: ${(props) => (props.$hiddenOpacity ? 0 : 1)}; */
   display: ${(props) => (props.$hidden ? "none" : "block")};
   padding: calc(var(--height) * 0.05);
+
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  transform: translateY(calc(var(--height) * -0.1));
+  ${({ $hide, $hiddenOpacity }) =>
+    !$hide &&
+    !$hiddenOpacity &&
+    css`
+      opacity: 1;
+      transform: translateY(0);
+    `}
 `
 
 const disabledKeycap = css`
-  opacity: 0.3;
+  opacity: 0.2;
   background-color: #eee;
   border: 1px solid #ccc;
 `
 
 const unplayableKeycap = css`
-  opacity: 0.3;
+  opacity: 0.2;
   background-color: #eee;
   border: 1px solid #ccc;
 `

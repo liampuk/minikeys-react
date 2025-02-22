@@ -1,2 +1,6 @@
+export * from "./hooks/useKeyboardControl"
 export * from "./hooks/useMiniKeys"
+export * from "./hooks/useMiniKeysKeyboard"
 export * from "./Keyboard/Keyboard"
+export * from "./Piano/Piano"
+export type { Highlights } from "./Piano/types"

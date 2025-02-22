@@ -1,10 +1,8 @@
-import { keyboardWhiteNotes, NoteName } from "minikeys2"
-
-export type WhiteNote = (typeof keyboardWhiteNotes)[number]
+import { NoteName } from "minikeys"
 
 export type Highlights = {
-  rangeStart?: WhiteNote
-  rangeEnd?: WhiteNote
+  rangeStart?: NoteName
+  rangeEnd?: NoteName
   rangeColor?: string
   activeNotes?: NoteName[]
 }
