@@ -6,3 +6,5 @@ export type Highlights = {
   rangeColor?: string
   activeNotes?: NoteName[]
 }
+
+export type ActiveKey = { keyCode: string; note?: NoteName }

@@ -35,6 +35,10 @@ export const Key = ({
     delayDisplay !== undefined && delayDisplay !== null
   )
 
+  if(active) {
+    console.log(active)
+  }
+
   useEffect(() => {
     if (hide) {
       setTimeout(() => {

@@ -8,6 +8,7 @@ import {
   keyCodeToLabel,
   optionalModifier,
 } from "./utils"
+import { ActiveKey } from "../Piano/types"
 
 export type ModifierKey = {
   keyCode: string
@@ -23,10 +24,14 @@ export type KeyboardProps = {
   dualMode?: boolean
   showFullKeyboard?: boolean
   modifierKeys?: ModifierKey[]
-  activeKeys: string[]
+  activeKeys: ActiveKey[]
   keyMap: KeyMap | undefined
   animate?: boolean
   onKeyClick?: (midiNote: number) => void
+}
+
+const activeKeysIncludes = (activeKeys: ActiveKey[], key: string) => {
+  return activeKeys.map(activeKey => activeKey.keyCode).includes(key)
 }
 
 export const Keyboard = ({
@@ -70,6 +75,8 @@ export const Keyboard = ({
     [showFullKeyboard, dualMode, modifierKeys]
   )
 
+  console.log(activeKeys, keyboardRows[0][1], activeKeysIncludes(activeKeys, keyboardRows[0][1]))
+
   return (
     <Container $width={width}>
       <Row
@@ -95,8 +102,8 @@ export const Keyboard = ({
           hidden={displayMap.get("Escape") === null}
           label="esc"
           active={
-            activeKeys.includes("Escape") ||
-            activeKeys.includes("IntlBackslash")
+            activeKeysIncludes(activeKeys, "Escape") ||
+            activeKeysIncludes(activeKeys, "IntlBackslash")
           }
           modifier={optionalModifier(["Escape", "IntlBackslash"], modifierKeys)}
         ></Key>
@@ -107,7 +114,7 @@ export const Keyboard = ({
             key={i}
             label={keyCodeToLabel.get(keyboardRows[0][i])}
             keyType={keyMap?.get(keyboardRows[0][i])?.type}
-            active={activeKeys.includes(keyboardRows[0][i])}
+            active={activeKeysIncludes(activeKeys, keyboardRows[0][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[0][i])?.midiNote)
             }
@@ -125,7 +132,7 @@ export const Keyboard = ({
           size={2}
           hidden={!displayMap.get("Backspace")}
           label="backspace"
-          active={activeKeys.includes("Backspace")}
+          active={activeKeysIncludes(activeKeys, "Backspace")}
           modifier={optionalModifier(["Backspace"], modifierKeys)}
         />
       </Row>
@@ -147,7 +154,7 @@ export const Keyboard = ({
           size={1.5}
           hidden={!displayMap.get("Tab")}
           label="tab"
-          active={activeKeys.includes("Tab")}
+          active={activeKeysIncludes(activeKeys, "Tab")}
           modifier={optionalModifier(["Tab"], modifierKeys)}
         />
         {Array.from({ length: 12 }).map((_, i) => (
@@ -157,7 +164,7 @@ export const Keyboard = ({
             key={i}
             label={keyCodeToLabel.get(keyboardRows[1][i])}
             keyType={keyMap?.get(keyboardRows[1][i])?.type}
-            active={activeKeys.includes(keyboardRows[1][i])}
+            active={activeKeysIncludes(activeKeys, keyboardRows[1][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[1][i])?.midiNote)
             }
@@ -169,7 +176,7 @@ export const Keyboard = ({
           size={1.5}
           hidden={!displayMap.get("Backquote")}
           label="\"
-          active={activeKeys.includes("Backquote")}
+          active={activeKeysIncludes(activeKeys, "Backquote")}
           modifier={optionalModifier(["Backquote"], modifierKeys)}
         />
       </Row>
@@ -191,11 +198,11 @@ export const Keyboard = ({
           size={1.75}
           hidden={!displayMap.get("CapsLock")}
           label="caps lock"
-          active={activeKeys.includes("CapsLock")}
+          active={activeKeysIncludes(activeKeys, "CapsLock")}
           modifier={optionalModifier(["CapsLock"], modifierKeys)}
           indicator={
             optionalModifier(["CapsLock"], modifierKeys) &&
-            (activeKeys.includes("CapsLock") ? "active" : "inactive")
+            (activeKeysIncludes(activeKeys, "CapsLock") ? "active" : "inactive")
           }
         />
         {Array.from({ length: 11 }).map((_, i) => (
@@ -205,7 +212,7 @@ export const Keyboard = ({
             key={i}
             label={keyCodeToLabel.get(keyboardRows[2][i])}
             keyType={keyMap?.get(keyboardRows[2][i])?.type}
-            active={activeKeys.includes(keyboardRows[2][i])}
+            active={activeKeysIncludes(activeKeys, keyboardRows[2][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[2][i])?.midiNote)
             }
@@ -217,7 +224,7 @@ export const Keyboard = ({
           size={2.25}
           hidden={!displayMap.get("Enter")}
           label="enter"
-          active={activeKeys.includes("Enter")}
+          active={activeKeysIncludes(activeKeys, "Enter")}
           modifier={optionalModifier(["Enter"], modifierKeys)}
         />
       </Row>
@@ -243,7 +250,7 @@ export const Keyboard = ({
           size={2.25}
           hidden={!displayMap.get("ShiftLeft")}
           label="shift"
-          active={activeKeys.includes("ShiftLeft")}
+          active={activeKeysIncludes(activeKeys, "ShiftLeft")}
           modifier={optionalModifier(["ShiftLeft"], modifierKeys)}
         />
         {Array.from({ length: 10 }).map((_, i) => (
@@ -253,7 +260,7 @@ export const Keyboard = ({
             key={i}
             label={keyCodeToLabel.get(keyboardRows[3][i])}
             keyType={keyMap?.get(keyboardRows[3][i])?.type}
-            active={activeKeys.includes(keyboardRows[3][i])}
+            active={activeKeysIncludes(activeKeys, keyboardRows[3][i])}
             onClick={() =>
               handleClick(keyMap?.get(keyboardRows[3][i])?.midiNote)
             }
@@ -271,7 +278,7 @@ export const Keyboard = ({
           size={2.75}
           hidden={!displayMap.get("ShiftRight")}
           label="shift"
-          active={activeKeys.includes("ShiftRight")}
+          active={activeKeysIncludes(activeKeys, "ShiftRight")}
           modifier={optionalModifier(["ShiftRight"], modifierKeys)}
         />
       </Row>

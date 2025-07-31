@@ -1,6 +1,7 @@
 import { KeyMap, midiToNote, NoteName } from "minikeys"
 import { useEffect, useState } from "react"
 import { ModifierKey } from "../Keyboard/Keyboard"
+import { ActiveKey } from "../Piano/types"
 
 export const useKeyboardControl = (
   keyMap: KeyMap | undefined,
@@ -8,7 +9,7 @@ export const useKeyboardControl = (
   modifierKeys?: ModifierKey[]
 ) => {
   const [activeKeys, setActiveKeys] = useState<
-    { keyCode: string; note?: NoteName }[]
+    ActiveKey[]
   >([])
 
   useEffect(() => {
