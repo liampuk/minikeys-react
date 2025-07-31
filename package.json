@@ -1,6 +1,7 @@
 {
   "name": "@minikeys/react",
   "version": "0.1.0",
+  "homepage": "https://liamp.uk/minikeys-react",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -16,7 +17,8 @@
   "scripts": {
     "build": "tsup",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "deploy-storybook": "storybook build && gh-pages -d storybook-static"
   },
   "author": "liamp.uk",
   "type": "module",
@@ -39,6 +41,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react-swc": "^3.8.0",
+    "gh-pages": "^6.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "storybook": "^8.5.6",
@@ -47,6 +50,6 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "minikeys": "link:../../../Library/pnpm/global/5/node_modules/minikeys"
+    "minikeys": "0.2.0"
   }
 }
