@@ -1,4 +1,4 @@
-import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X,s as Y}from"./useMiniKeys-Bp8ph1eT.js";import{d as E}from"./styled-components.browser.esm-DxTIr8mQ.js";import"./index-DmM0KDA7.js";const q=({width:e,height:a,offset:t,fill:c,strokeWidth:s,strokeColour:m,noBorder:l,type:o})=>{const i=a*.025;return r.jsx(O,{$type:o,d:`
+import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X,s as Y}from"./useMiniKeys-CGS2f3Qr.js";import{d as E}from"./styled-components.browser.esm-DxTIr8mQ.js";import"./index-DmM0KDA7.js";const q=({width:e,height:a,offset:t,fill:c,strokeWidth:s,strokeColour:m,noBorder:l,type:o})=>{const i=a*.025;return r.jsx(O,{$type:o,d:`
     M${e+(l?t-s:t)} ${o==="white"?l?0:s/2:0},
     L${e+(l?t-s:t)} ${a-i-s/2},
     q0,${i} -${i},${i},
