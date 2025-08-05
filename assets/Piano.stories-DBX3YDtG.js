@@ -27,7 +27,7 @@ import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X
   rangeEnd?: NoteName
   rangeColor?: string
   activeNotes?: NoteName[]
-}`,signature:{properties:[{key:"rangeStart",value:{name:"NoteName",required:!1}},{key:"rangeEnd",value:{name:"NoteName",required:!1}},{key:"rangeColor",value:{name:"string",required:!1}},{key:"activeNotes",value:{name:"Array",elements:[{name:"NoteName"}],raw:"NoteName[]",required:!1}}]}},description:""},noBorder:{required:!1,tsType:{name:"boolean"},description:"",defaultValue:{value:"false",computed:!1}},onClick:{required:!1,tsType:{name:"signature",type:"function",raw:"(midiNote: number) => void",signature:{arguments:[{type:{name:"number"},name:"midiNote"}],return:{name:"void"}}},description:""}}};const U=e=>{const{playNoteFromMidi:a,isLoading:t}=X(Y);return r.jsxs(r.Fragment,{children:[r.jsx(w,{...e,onClick:a}),r.jsx(r.Fragment,{children:r.jsx("p",{children:t?"Loading samples...":null})})]})},N={args:{width:1e3,numKeys:52,strokeColour:"#ccc",strokeWidth:1.5},render:U,decorators:[e=>r.jsx("div",{style:{margin:"1em"},children:r.jsx(e,{})})]},S={args:{showLabels:!0,width:1e3,numKeys:16,strokeColour:"#ccc",strokeWidth:1.5},render:U,decorators:[e=>r.jsx("div",{style:{margin:"1em"},children:r.jsx(e,{})})]},b={args:{width:1200,numKeys:24,showLabels:!0,strokeColour:"#ccc",strokeWidth:1.5,baseNote:"C3"},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},k={args:{width:1200,numKeys:52,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"C4",rangeEnd:"F5",rangeColor:"#eee"}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},j={args:{width:1200,numKeys:24,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"F4",rangeEnd:"F6",rangeColor:"#eee",activeNotes:["E5","G5","A#5"]}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},P={args:{noBorder:!0,width:1200,numKeys:24,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"F4",rangeEnd:"F6",rangeColor:"#eee",activeNotes:["E5","G5","A#5"]}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em",backgroundColor:"#111",height:"100vh"},children:r.jsx(e,{})})]},de={title:"Piano",component:w};var F,$,A;N.parameters={...N.parameters,docs:{...(F=N.parameters)==null?void 0:F.docs,source:{originalSource:`{
+}`,signature:{properties:[{key:"rangeStart",value:{name:"NoteName",required:!1}},{key:"rangeEnd",value:{name:"NoteName",required:!1}},{key:"rangeColor",value:{name:"string",required:!1}},{key:"activeNotes",value:{name:"Array",elements:[{name:"NoteName"}],raw:"NoteName[]",required:!1}}]}},description:""},noBorder:{required:!1,tsType:{name:"boolean"},description:"",defaultValue:{value:"false",computed:!1}},onClick:{required:!1,tsType:{name:"signature",type:"function",raw:"(midiNote: number) => void",signature:{arguments:[{type:{name:"number"},name:"midiNote"}],return:{name:"void"}}},description:""}}};const U=e=>{const{playNoteFromMidi:a,isLoading:t}=X(Y);return r.jsxs(r.Fragment,{children:[r.jsx(w,{...e,onClick:a}),r.jsx(r.Fragment,{children:r.jsx("p",{children:t?"Loading samples...":null})})]})},N={args:{width:1e3,numKeys:52,strokeColour:"#ccc",strokeWidth:1.5},render:U,decorators:[e=>r.jsx("div",{style:{margin:"1em"},children:r.jsx(e,{})})]},S={args:{showLabels:!0,width:1e3,numKeys:16,strokeColour:"#ccc",strokeWidth:1.5},render:U,decorators:[e=>r.jsx("div",{style:{margin:"1em"},children:r.jsx(e,{})})]},b={args:{width:1e3,numKeys:24,showLabels:!0,strokeColour:"#ccc",strokeWidth:1.5,baseNote:"C3"},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},k={args:{width:1e3,numKeys:52,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"C4",rangeEnd:"F5",rangeColor:"#eee"}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},j={args:{width:1e3,numKeys:24,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"F4",rangeEnd:"F6",rangeColor:"#eee",activeNotes:["E5","G5","A#5"]}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em"},children:r.jsx(e,{})})]},P={args:{noBorder:!0,width:1e3,numKeys:24,strokeColour:"#ccc",strokeWidth:1.5,highlights:{rangeStart:"F4",rangeEnd:"F6",rangeColor:"#eee",activeNotes:["E5","G5","A#5"]}},render:w,decorators:[e=>r.jsx("div",{style:{padding:"1em",backgroundColor:"#111",height:"100vh"},children:r.jsx(e,{})})]},de={title:"Piano",component:w};var F,$,A;N.parameters={...N.parameters,docs:{...(F=N.parameters)==null?void 0:F.docs,source:{originalSource:`{
   args: {
     width: 1000,
     numKeys: 52,
@@ -56,7 +56,7 @@ import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X
       </div>]
 }`,...(L=(K=S.parameters)==null?void 0:K.docs)==null?void 0:L.source}}};var B,G,D;b.parameters={...b.parameters,docs:{...(B=b.parameters)==null?void 0:B.docs,source:{originalSource:`{
   args: {
-    width: 1200,
+    width: 1000,
     numKeys: 24,
     showLabels: true,
     strokeColour: "#ccc",
@@ -71,7 +71,7 @@ import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X
       </div>]
 }`,...(D=(G=b.parameters)==null?void 0:G.docs)==null?void 0:D.source}}};var _,M,W;k.parameters={...k.parameters,docs:{...(_=k.parameters)==null?void 0:_.docs,source:{originalSource:`{
   args: {
-    width: 1200,
+    width: 1000,
     numKeys: 52,
     strokeColour: "#ccc",
     strokeWidth: 1.5,
@@ -89,7 +89,7 @@ import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X
       </div>]
 }`,...(W=(M=k.parameters)==null?void 0:M.docs)==null?void 0:W.source}}};var R,V,I;j.parameters={...j.parameters,docs:{...(R=j.parameters)==null?void 0:R.docs,source:{originalSource:`{
   args: {
-    width: 1200,
+    width: 1000,
     numKeys: 24,
     strokeColour: "#ccc",
     strokeWidth: 1.5,
@@ -109,7 +109,7 @@ import{j as r}from"./jsx-runtime-D_zvdyIk.js";import{p as f,n as J,c as g,u as X
 }`,...(I=(V=j.parameters)==null?void 0:V.docs)==null?void 0:I.source}}};var z,H,Z;P.parameters={...P.parameters,docs:{...(z=P.parameters)==null?void 0:z.docs,source:{originalSource:`{
   args: {
     noBorder: true,
-    width: 1200,
+    width: 1000,
     numKeys: 24,
     strokeColour: "#ccc",
     strokeWidth: 1.5,
